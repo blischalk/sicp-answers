@@ -1,7 +1,14 @@
 # Exercise 1.6
 
+(define (square x) (* x x))
+
 (define (average x y)
   (/ (+ x y) 2))
+
+(define (abs x)
+  (if (< x 0)
+      (- x)
+      x))
 
 (define (improve guess x)
   (average guess (/ x guess)))
