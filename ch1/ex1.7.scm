@@ -17,15 +17,16 @@ E.x
 Actual square root...
 .01^2                = 0.0001
 
+Off by 0.008956164166
+
 (sqrt 0.0002)        = .03335281609280434
 .03335281609280434^2 = 0.001112410341
 
 Actual square root...
-.0141^2              = 0.00019881
+0.01414213562^2      = 0.0001999999999
 
-The supposed square root utilizing the current good-enough?
-implementation yields square roots larger than the number
-we are searching for the square root of !?!?
+Off by 0.01921068047
+
 
 For very large numbers the function will never return.
 
@@ -105,3 +106,35 @@ asks that the guess be improved even though it can't be.
 
 (define (sqrt x)
   (sqrt-iter 1.0 x))
+
+
+#| An alternative strategy for implementing good-enough? is to watch
+how guess changes from one iteration to the next and to stop when the
+change is a very small fraction of the guess. Design a square-root
+procedure that uses this kind of end test. Does this work better for
+small and large numbers? |#
+
+(define (good-enough?2 pguess cguess x)
+  (let* ((change (- pguess cguess))
+        (fct-of-guess (/ change cguess)))
+    (< (abs fct-of-guess) 0.001)))
+
+
+(define (sqrt-iter2 pguess cguess x)
+  (if (good-enough?2 pguess cguess x)
+          cguess
+          (sqrt-iter2 cguess
+                     (improve cguess x)
+                     x)))
+
+(define (sqrt2 x)
+  (sqrt-iter2 0 1.0 x))
+
+#|
+Redifining our good-enough function to look at the amount of change
+between subsequent improvements does work better for large and small
+numbers.  In the scenario of small numbers, it no longer stops after
+the n guess is smaller than the threshold.  In the large number
+scenario, once we reach the point where the infinite loop occurred
+before the program will return its result because nothing will
+change from call to call making the result the best that can be done.|#
